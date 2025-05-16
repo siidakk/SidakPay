@@ -29,10 +29,6 @@ jobs:
 
       - name: Build React app
         run: npm run build
-        working-directory: ./sidak_new
-
-      - name: List build output
-        run: ls -R ./sidak_new
 
   deploy:
     runs-on: ubuntu-latest

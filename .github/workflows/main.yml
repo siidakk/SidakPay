@@ -40,7 +40,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
       - name: List build directory
-        run: ls -la build
+        run: ls build
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:

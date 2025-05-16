@@ -44,23 +44,23 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.PAT_TOKEN }}
-          publish_dir: dist
+          publish_dir: build
           enable_jekyll: false
           publish_branch: gh-pages
 
-      - name: Deploy to IIS (Windows)
-        run: |
-          $iisPath = "C:\inetpub\wwwroot\reactapp"
-          $sourcePath = "${{ github.workspace }}\build"
+      # - name: Deploy to IIS (Windows)
+      #   run: |
+      #     $iisPath = "C:\inetpub\wwwroot\reactapp"
+      #     $sourcePath = "${{ github.workspace }}\build"
 
-          if (Test-Path $iisPath) {
-            Remove-Item "$iisPath\*" -Recurse -Force
-          } else {
-            New-Item -Path $iisPath -ItemType Directory -Force
-          }
+      #     if (Test-Path $iisPath) {
+      #       Remove-Item "$iisPath\*" -Recurse -Force
+      #     } else {
+      #       New-Item -Path $iisPath -ItemType Directory -Force
+      #     }
 
-          Copy-Item "$sourcePath\*" -Destination $iisPath -Recurse -Force
-        shell: pwsh
+      #     Copy-Item "$sourcePath\*" -Destination $iisPath -Recurse -Force
+      #   shell: pwsh
 
   notify-success:
     runs-on: ubuntu-latest

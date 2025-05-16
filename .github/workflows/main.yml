@@ -1,4 +1,4 @@
-name: Deploy React App to GitHub Pages
+name: Deploy React App to GitHub Pages and IIS
 
 on:
   workflow_dispatch:
@@ -33,7 +33,7 @@ jobs:
         run: npm run build
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted  # 👈 Must be a Windows self-hosted runner
     needs: build
 
     steps:
@@ -47,6 +47,20 @@ jobs:
           publish_dir: dist
           enable_jekyll: false
           publish_branch: gh-pages
+
+      - name: Deploy to IIS (Windows)
+        run: |
+          $iisPath = "C:\inetpub\wwwroot\reactapp"
+          $sourcePath = "${{ github.workspace }}\dist"
+
+          if (Test-Path $iisPath) {
+            Remove-Item "$iisPath\*" -Recurse -Force
+          } else {
+            New-Item -Path $iisPath -ItemType Directory -Force
+          }
+
+          Copy-Item "$sourcePath\*" -Destination $iisPath -Recurse -Force
+        shell: pwsh  # Use PowerShell shell for Windows
 
   notify-success:
     runs-on: ubuntu-latest

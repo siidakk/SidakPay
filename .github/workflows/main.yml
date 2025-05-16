@@ -51,16 +51,17 @@ jobs:
       - name: Deploy to IIS (Windows)
         run: |
           $iisPath = "C:\inetpub\wwwroot\reactapp"
-          $sourcePath = "${{ github.workspace }}\dist"
-
+          $sourcePath = "${{ github.workspace }}\build"
+      
           if (Test-Path $iisPath) {
             Remove-Item "$iisPath\*" -Recurse -Force
           } else {
             New-Item -Path $iisPath -ItemType Directory -Force
           }
-
+      
           Copy-Item "$sourcePath\*" -Destination $iisPath -Recurse -Force
-        shell: pwsh  # Use PowerShell shell for Windows
+        shell: pwsh
+
 
   notify-success:
     runs-on: ubuntu-latest

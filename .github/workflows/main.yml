@@ -32,31 +32,19 @@ jobs:
       - name: Build React app
         run: npm run build
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: react-build
-          path: build
-
   deploy:
-    runs-on: self-hosted  # Your Windows IIS runner
+    runs-on: self-hosted  # 👈 Must be a Windows self-hosted runner
     needs: build
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: react-build
-          path: build
-
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.PAT_TOKEN }}
-          publish_dir: build
+          publish_dir: dist
           enable_jekyll: false
           publish_branch: gh-pages
 
@@ -91,3 +79,4 @@ jobs:
     steps:
       - name: Failure
         run: echo "Deployment Failed!!"
+

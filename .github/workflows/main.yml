@@ -32,19 +32,31 @@ jobs:
       - name: Build React app
         run: npm run build
 
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: react-build
+          path: build
+
   deploy:
-    runs-on: self-hosted  # 👈 Must be a Windows self-hosted runner
+    runs-on: self-hosted  # Your Windows IIS runner
     needs: build
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: react-build
+          path: build
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.PAT_TOKEN }}
-          publish_dir: dist
+          publish_dir: build
           enable_jekyll: false
           publish_branch: gh-pages
 
@@ -52,16 +64,15 @@ jobs:
         run: |
           $iisPath = "C:\inetpub\wwwroot\reactapp"
           $sourcePath = "${{ github.workspace }}\build"
-      
+
           if (Test-Path $iisPath) {
             Remove-Item "$iisPath\*" -Recurse -Force
           } else {
             New-Item -Path $iisPath -ItemType Directory -Force
           }
-      
+
           Copy-Item "$sourcePath\*" -Destination $iisPath -Recurse -Force
         shell: pwsh
-
 
   notify-success:
     runs-on: ubuntu-latest
